@@ -11,7 +11,7 @@ namespace CSharpLearn
             char[,] map =
             {
                 {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#'},
-                {'#', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+                {'#', ' ', ' ', '#', 'X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
                 {'#', ' ', 'X', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X', '#'},
                 {'#', ' ', ' ', '#', ' ', ' ', ' ', ' ', 'X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
                 {'#', ' ', ' ', '#', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
@@ -51,7 +51,7 @@ namespace CSharpLearn
             {
                 // Display money
                 Console.SetCursorPosition(0, map.GetLength(0) + 2);
-                Console.Write($"Money: {money}");
+                Console.Write($"Money: {money} / 10");
 
                 // Draw map
                 Console.SetCursorPosition(0, 0);
@@ -120,6 +120,8 @@ namespace CSharpLearn
             Console.Write(text);
             Console.WriteLine("\n".Repeat(Console.WindowHeight / 2));
             Console.WriteLine("Author - @ColorKat");
+
+            Console.ReadKey();
         }
     }
 
