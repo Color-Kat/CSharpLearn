@@ -1,48 +1,140 @@
-﻿namespace CSharpLearn
+﻿using static System.Net.Mime.MediaTypeNames;
+
+namespace CSharpLearn
 {
     internal class Program
     {
         private static void Main(string[] args)
         {
-            Console.WriteLine("/* --- Guess The Number Game --- */");
-            Console.Write("Enter the max number (define the difficulty): ");
+            Console.CursorVisible = false;
 
-            int minNumber = 1, maxNumber = 0;
-            maxNumber = Convert.ToInt32(Console.ReadLine());
-
-            Random random = new Random();
-            int randValue = random.Next(minNumber, maxNumber);
-            int attemptsCountRest = (int) Math.Sqrt(Convert.ToDouble(maxNumber));
-
-            for(int i = attemptsCountRest; i > 0; i--)
+            char[,] map =
             {
-                if (attemptsCountRest == i) Console.WriteLine($"You have {i} attempts, guess the number.");
-                else Console.WriteLine($"You have {i} fucking attempts, guess this motherfucking number!");
+                {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#'},
+                {'#', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+                {'#', ' ', 'X', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X', '#'},
+                {'#', ' ', ' ', '#', ' ', ' ', ' ', ' ', 'X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+                {'#', ' ', ' ', '#', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+                {'#', ' ', '#', '#', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', '#', ' ', ' ', '#'},
+                {'#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', '#', ' ', ' ', '#'},
+                {'#', ' ', '#', ' ', ' ', 'X', '#', ' ', ' ', '#', ' ', ' ', '#', ' ', ' ', '#', ' ', ' ', '#'},
+                {'#', ' ', '#', '#', '#', '#', '#', ' ', ' ', '#', ' ', ' ', '#', ' ', 'X', ' ', ' ', ' ', '#'},
+                {'#', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'},
+                {'#', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', 'X', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'},
+                {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', ' ', '#'},
+                {'#', ' ', 'X', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'},
+                {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X', ' ', '#', ' ', 'X', ' ', ' ', ' ', '#'},
+                {'#', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'},
+                {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#','#'},
+            };
 
-                Console.Write("And your variant is: ");
-                
-                int guessedNumber = Convert.ToInt32(Console.ReadLine());
-                if ( guessedNumber != randValue )
+            // Display info message
+            Console.SetCursorPosition(0, 20);
+            Console.WriteLine("- ".Repeat(map.GetLength(1)));
+            string header = "Control";
+            string separator = " ".Repeat((map.GetLength(1) * 2 - 2 - header.Length) / 2);
+            Console.WriteLine("|" + separator + header + separator + "|");
+            Console.WriteLine("- ".Repeat(map.GetLength(1)));
+
+            Console.WriteLine("| Up Arrow    - move up");
+            Console.WriteLine("| Right Arrow - move right");
+            Console.WriteLine("| Down Arrow  - move down");
+            Console.WriteLine("| Left Arrow  - move left");
+            Console.WriteLine("_".Repeat(map.GetLength(1) * 2 - 1));
+
+            // Variables
+            int stepX = 2;
+            int userX = 8, userY = 6;
+            int money = 0;
+
+            while (true)
+            {
+                // Display money
+                Console.SetCursorPosition(0, map.GetLength(0) + 2);
+                Console.Write($"Money: {money}");
+
+                // Draw map
+                Console.SetCursorPosition(0, 0);
+
+                for (int i = 0; i < map.GetLength(0); i++)
                 {
-                    Console.WriteLine("You're damn wrong!");
-
-                    if (i == 1)
+                    for (int j = 0; j < map.GetLength(1); j++)
                     {
-                        Console.WriteLine("You have ran out of attempts.\nGet the fuck out of here! Please");
-                        Console.WriteLine("The right answer was " + randValue);
+                        Console.Write(map[i, j] + " ");
                     }
+                    Console.WriteLine();
                 }
-                else
+
+                // Draw user position
+                Console.SetCursorPosition(userX * stepX, userY);
+                Console.Write('@');
+
+                // Movement
+                ConsoleKeyInfo charKey = Console.ReadKey();
+
+                switch(charKey.Key)
                 {
-                    Console.WriteLine(
-                        "Oh, shit, this nigga is god damn right!\n" +
-                        "I can't belive it, you won a million dollars, nigga!"
-                    );
-                    break;
+                    case ConsoleKey.UpArrow:
+                        if (map[userY - 1, userX] != '#')
+                        {
+                            userY--;
+                        }
+                        break;
+                    case ConsoleKey.DownArrow:
+                        if (map[userY + 1, userX] != '#')
+                        {
+                            userY++;
+                        }
+                        break;
+                    case ConsoleKey.RightArrow:
+                        if (map[userY, userX + 1] != '#')
+                        {
+                            userX++;
+                        }
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        if (map[userY, userX - 1] != '#')
+                        {
+                            userX--;
+                        }
+                        break;
                 }
+
+                if (map[userY, userX] == 'X')
+                {
+                    money++;
+                    map[userY, userX] = ' ';
+                }
+
+
+                // Console.Clear();
+
+                // Game end
+                if (money >= 10) break;
             }
 
-            Console.ReadKey();
+            Console.Clear();
+
+            string text = "Thanks for playing!";
+            Console.SetCursorPosition((Console.WindowWidth / 2) - (text.Length / 2), Console.WindowHeight / 2);
+            Console.Write(text);
+            Console.WriteLine("\n".Repeat(Console.WindowHeight / 2));
+            Console.WriteLine("Author - @ColorKat");
+        }
+    }
+
+    // Extention of standard string class
+    // That adds the repaeat method
+    public static class StringExtensions
+    {
+        public static string Repeat(this string instr, int n)
+        {
+            var result = string.Empty;
+
+            for (var i = 0; i < n; i++)
+                result += instr;
+
+            return result;
         }
     }
 }
